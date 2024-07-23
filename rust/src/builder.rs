@@ -228,7 +228,7 @@ impl<R> CoroutineBuilder<R>
 			Gd::from_init_fn(|base| {
 				SpireCoroutine {
 					base,
-					coroutine: self.f,
+					coroutine: Some(self.f),
 					poll_mode: self.poll_mode,
 					last_yield: None,
 					paused: !self.auto_start,

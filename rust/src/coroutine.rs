@@ -13,10 +13,10 @@ use crate::yielding::SpireYield;
 /// - [node.start_coroutine](crate::prelude::StartCoroutine::start_coroutine)
 /// - [node.start_async_task](crate::prelude::StartAsyncTask::start_async_task) (requires feature "async")
 #[derive(GodotClass)]
-#[class(no_init, base = Node)]
+#[class(init, base = Node)]
 pub struct SpireCoroutine {
 	pub(crate) base: Base<Node>,
-	pub(crate) coroutine: Box<dyn Unpin + Coroutine<(), Yield = SpireYield, Return = Variant>>,
+	pub(crate) coroutine: Option<Box<dyn Unpin + Coroutine<(), Yield = SpireYield, Return = Variant>>>,
 	pub(crate) poll_mode: PollMode,
 	pub(crate) last_yield: Option<SpireYield>,
 	pub(crate) paused: bool,
@@ -24,8 +24,9 @@ pub struct SpireCoroutine {
 }
 
 /// Defines whether the coroutine polls on process or physics frames. 
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+#[derive(Default,Debug, Copy, Clone, PartialEq, Eq)]
 pub enum PollMode {
+	#[default]
 	Process,
 	Physics,
 }
@@ -107,7 +108,7 @@ impl SpireCoroutine {
 	pub fn force_run_to_completion(&mut self) -> Variant {
 		let mut iters_remaining = 4096;
 
-		let mut pin = Pin::new(&mut self.coroutine);
+		let mut pin = Pin::new(self.coroutine.as_deref_mut().unwrap());
 		
 		loop {
 			match pin.as_mut().resume(()) {
@@ -221,7 +222,7 @@ impl SpireCoroutine {
 				}
 			}
 			None => {
-				let pin = Pin::new(&mut self.coroutine);
+				let pin = Pin::new(self.coroutine.as_deref_mut().unwrap());
 				match pin.resume(()) {
 					CoroutineState::Yielded(next_yield) => {
 						self.last_yield = Some(next_yield);
