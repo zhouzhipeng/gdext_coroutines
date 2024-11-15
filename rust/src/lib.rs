@@ -1,3 +1,6 @@
+//! WARNING: If you're using the latest github version of gdext, use this crate's latest github version too,
+//! it won't compile otherwise.
+
 #![feature(coroutines)]
 #![feature(coroutine_trait)]
 #![feature(stmt_expr_attributes)]
@@ -9,6 +12,7 @@
 #![allow(unused_doc_comments)]
 #![allow(private_bounds)]
 
+
 #![doc = include_str!("../../README.md")]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
@@ -18,6 +22,7 @@ mod coroutine;
 mod yielding;
 mod builder;
 mod start_coroutine;
+mod pinky_promise;
 
 #[cfg(feature = "async")]
 mod start_async_task;

@@ -187,13 +187,13 @@ impl SpireCoroutine {
 				}
 				OnFinishCall::Callable(callable) => {
 					if callable.is_valid() {
-						callable.callv(VariantArray::from(&[result.clone()]));
+						callable.callv(&VariantArray::from(&[result.clone()]));
 					}
 				}
 			}
 		}
 
-		self.base_mut().emit_signal(SIGNAL_FINISHED.into(), &[result]);
+		self.base_mut().emit_signal(SIGNAL_FINISHED, &[result]);
 		self.de_spawn();
 	}
 
@@ -201,7 +201,7 @@ impl SpireCoroutine {
 		let mut base = self.base().to_godot();
 
 		if let Some(mut parent) = base.get_parent() {
-			parent.remove_child(base.clone())
+			parent.remove_child(&base)
 		}
 
 		base.queue_free();
@@ -235,7 +235,7 @@ impl SpireCoroutine {
 				}
 			}
 			Some(SpireYield::Dyn(dyn_yield)) => {
-				if dyn_yield.keep_waiting() {
+				if dyn_yield.keep_waiting(delta_time) {
 					None
 				} else {
 					self.last_yield = None;
