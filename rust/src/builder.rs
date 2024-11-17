@@ -93,7 +93,7 @@ impl<R> CoroutineBuilder<R>
 		where
 			R: Send,
 	{
-		let task = tokio::spawn(f);
+		let task = get_runtime().spawn(f);
 
 		let routine =
 			#[coroutine] move || {
@@ -121,7 +121,7 @@ impl<R> CoroutineBuilder<R>
 		owner: Gd<Node>,
 		f: impl std::future::Future<Output = R> + Unpin + 'static,
 	) -> CoroutineBuilder<R> {
-		let task = tokio::spawn(pinky_promise::PinkyPromise(f));
+		let task = get_runtime().spawn(pinky_promise::PinkyPromise(f));
 		
 		let routine =
 			#[coroutine] move || {
@@ -290,8 +290,7 @@ impl<R> CoroutineBuilder<R>
 		coroutine
 	}
 }
-#[cfg(feature = "async")]
-use tokio::runtime::Handle;
+
 #[cfg(feature = "async")]
 use tokio::runtime::Runtime;
 
