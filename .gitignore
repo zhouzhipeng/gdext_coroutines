@@ -39,3 +39,4 @@ tramp
 .history/*
 */.idea/*
 bin/
+.idea/

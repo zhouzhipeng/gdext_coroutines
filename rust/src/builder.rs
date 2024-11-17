@@ -1,12 +1,25 @@
+use std::cell::OnceCell;
 use std::ops::{Coroutine, CoroutineState};
 use std::pin::Pin;
-
+use std::sync::OnceLock;
 use godot::classes::node::ProcessMode;
 use godot::prelude::*;
 
 use crate::OnFinishCall;
 use crate::prelude::*;
 use crate::yielding::SpireYield;
+
+#[cfg(feature = "async")]
+static RUNTIME: OnceLock<Runtime> = OnceLock::new();
+
+#[cfg(feature = "async")]
+/// 获取或初始化 Tokio runtime
+pub fn get_runtime() -> &'static Runtime {
+	RUNTIME.get_or_init(|| {
+		Runtime::new()
+			.expect("Failed to create Tokio runtime")
+	})
+}
 
 /// Builder struct for customizing coroutine behavior.
 #[must_use]
@@ -65,6 +78,8 @@ impl<R> CoroutineBuilder<R>
 			type_hint: std::marker::PhantomData,
 		}
 	}
+
+
 	
 	/// Creates a new coroutine builder with default settings.
 	/// 
@@ -78,7 +93,7 @@ impl<R> CoroutineBuilder<R>
 		where
 			R: Send,
 	{
-		let task = smol::spawn(f);
+		let task = tokio::spawn(f);
 
 		let routine =
 			#[coroutine] move || {
@@ -86,7 +101,7 @@ impl<R> CoroutineBuilder<R>
 					yield frames(1);
 				}
 
-				smol::block_on(task).to_variant()
+				get_runtime().block_on(task).unwrap().to_variant()
 			};
 
 		CoroutineBuilder {
@@ -106,7 +121,7 @@ impl<R> CoroutineBuilder<R>
 		owner: Gd<Node>,
 		f: impl std::future::Future<Output = R> + Unpin + 'static,
 	) -> CoroutineBuilder<R> {
-		let task = smol::spawn(pinky_promise::PinkyPromise(f));
+		let task = tokio::spawn(pinky_promise::PinkyPromise(f));
 		
 		let routine =
 			#[coroutine] move || {
@@ -114,7 +129,7 @@ impl<R> CoroutineBuilder<R>
 					yield frames(1);
 				}
 				
-				smol::block_on(task).0.to_variant()
+				get_runtime().block_on(task).unwrap().0.to_variant()
 			};
 		
 		CoroutineBuilder {
@@ -275,6 +290,10 @@ impl<R> CoroutineBuilder<R>
 		coroutine
 	}
 }
+#[cfg(feature = "async")]
+use tokio::runtime::Handle;
+#[cfg(feature = "async")]
+use tokio::runtime::Runtime;
 
 #[cfg(feature = "async")]
 mod pinky_promise {
@@ -282,7 +301,8 @@ mod pinky_promise {
 	use std::pin::Pin;
 	use std::task::{Context, Poll};
 	use godot::meta::ToGodot;
-	use smol::future::FutureExt;
+
+	use futures_lite::FutureExt;
 
 	pub struct PinkyPromise<T>(pub T);
 
