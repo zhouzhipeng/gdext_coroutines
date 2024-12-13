@@ -18,8 +18,8 @@ crate-type = ["lib", "cdylib"]
 
 [dependencies]
 #godot = { version = "0.1", features = ["experimental-threads"] }
-#godot = { git="https://github.com/zhouzhipeng/gdext.git", branch = "master", features = ["serde"]}
-godot = {  path="/Users/zhouzhipeng/RustroverProjects/gdext/godot", features = ["serde"]}
+godot = { git="https://github.com/zhouzhipeng/gdext.git", branch = "master", features = ["serde"]}
+#godot = {  path="/Users/zhouzhipeng/RustroverProjects/gdext/godot", features = ["serde"]}
 #smol = { version = "2.0", optional = true }
 tokio = { version = "1", features = ["full"] , optional = true}
 futures-lite = { version = "2.5.0", optional = true }
