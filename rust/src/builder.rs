@@ -285,7 +285,14 @@ impl<R> CoroutineBuilder<R>
 		coroutine.set_process_mode(self.process_mode);
 
 		let mut owner = self.owner;
-		owner.add_child(&coroutine);
+
+		//remove all other coroutine nodes firstly
+		// println!("childs : {:?}", owner.get_children());
+		if let Some(node) = owner.find_child_ex("SpireCoroutine").recursive(false).owned(false).done(){
+			owner.remove_child(&node);
+		}
+
+		owner.add_child_ex(&coroutine).force_readable_name(true).done();
 
 		coroutine
 	}
