@@ -94,7 +94,7 @@ pub const SIGNAL_FINISHED: &str = "finished";
 #[godot_api]
 impl SpireCoroutine {
 	#[signal]
-	fn finished(result: Variant) {}
+	fn finished(result: Variant);
 
 	#[func]
 	pub fn is_paused(&self) -> bool {
