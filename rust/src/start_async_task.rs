@@ -117,7 +117,7 @@ impl<T> StartAsyncTask for &T
 		where
 			R: 'static + ToGodot + Send,
 	{
-		let base = self.base_field().to_gd();
+		let base = self.base_field().to_init_gd();
 		CoroutineBuilder::new_async_task(base.upcast(), f)
 	}
 
@@ -125,7 +125,7 @@ impl<T> StartAsyncTask for &T
 		&self,
 		f: impl Future<Output = R> + Unpin + 'static
 	) -> CoroutineBuilder<R> {
-		let base = self.base_field().to_gd();
+		let base = self.base_field().to_init_gd();
 		CoroutineBuilder::new_async_task_unchecked(base.upcast(), f)
 	}
 }
@@ -141,7 +141,7 @@ impl<T> StartAsyncTask for &mut T
 		where
 			R: 'static + ToGodot + Send,
 	{
-		let base = self.base_field().to_gd();
+		let base = self.base_field().to_init_gd();
 		CoroutineBuilder::new_async_task(base.upcast(), f)
 	}
 
@@ -149,7 +149,7 @@ impl<T> StartAsyncTask for &mut T
 		&self,
 		f: impl Future<Output = R> + Unpin + 'static
 	) -> CoroutineBuilder<R> {
-		let base = self.base_field().to_gd();
+		let base = self.base_field().to_init_gd();
 		CoroutineBuilder::new_async_task_unchecked(base.upcast(), f)
 	}
 }
