@@ -80,7 +80,7 @@ impl<R> CoroutineBuilder<R>
 	}
 
 
-	
+
 	/// Creates a new coroutine builder with default settings.
 	/// 
 	/// Instead of running a regular Rust Coroutine, this runs a [Future](std::future::Future) in a background thread.

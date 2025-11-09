@@ -1,9 +1,9 @@
 [package]
 name = "gdext_coroutines"
-version = "0.7.0"
+version = "0.8.0"
 authors = ["Houtamelo"]
 edition = "2021"
-description = "Run Rust Async functions and Coroutines in Godot 4.2+ (through GDExtension), inspired on Unity's Coroutines design."
+description = "Run Rust Async functions and Coroutines in Godot 4.4+ (through GDExtension), inspired on Unity's Coroutines design."
 license = "MIT"
 repository = "https://github.com/Houtamelo/gdext_coroutines"
 categories = ["game-development", "api-bindings", "asynchronous"]
@@ -18,7 +18,7 @@ crate-type = ["lib", "cdylib"]
 
 [dependencies]
 #godot = { version = "0.1", features = ["experimental-threads"] }
-godot = { git="https://github.com/zhouzhipeng/gdext.git", branch = "master", features = ["serde"]}
+godot = { version = "0.4", features = ["experimental-threads"] }
 #godot = {  path="/Users/zhouzhipeng/RustroverProjects/gdext/godot", features = ["serde"]}
 #smol = { version = "2.0", optional = true }
 tokio = { version = "1", features = ["full"] , optional = true}

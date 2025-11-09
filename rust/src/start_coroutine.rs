@@ -96,7 +96,7 @@ impl<T> StartCoroutine for &T
 		where
 			R: 'static + ToGodot,
 	{
-		let base = self.base_field().to_gd();
+		let base = self.base_field().to_init_gd();
 		CoroutineBuilder::new_coroutine(base.upcast(), f)
 	}
 }
@@ -112,7 +112,7 @@ impl<T> StartCoroutine for &mut T
 		where
 			R: 'static + ToGodot,
 	{
-		let base = self.base_field().to_gd();
+		let base = self.base_field().to_init_gd();
 		CoroutineBuilder::new_coroutine(base.upcast(), f)
 	}
 }
